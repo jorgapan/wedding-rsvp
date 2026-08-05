@@ -101,15 +101,15 @@
                 </div>
 
                 <div class="form-group">
-                    <label id="lbl-meal">Meal preference</label>
-                    <select id="meal_preference" name="meal_preference">
-                        <!-- Options will be populated dynamically based on language -->
+                    <label id="lbl-dietary">Dietary preferences & restrictions</label>
+                    <select id="dietary_preference" name="dietary_preference">
+                        <!-- Populated dynamically via JS -->
                     </select>
                 </div>
 
-                <div class="form-group">
-                    <label id="lbl-dietary">Dietary restrictions & allergies</label>
-                    <textarea id="dietary" name="dietary" rows="3" placeholder="Let us know..."></textarea>
+                <div class="form-group hidden" id="other-dietary-container">
+                    <label id="lbl-other-dietary">Please specify:</label>
+                    <textarea id="dietary_custom" name="dietary_custom" rows="2" placeholder="Describe restrictions or allergies..."></textarea>
                 </div>
 
                 <button type="submit" class="btn" id="btn-submit">Submit RSVP</button>
@@ -125,14 +125,13 @@
 
 <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwXUH8ej3-l3_-jhrgGQZ_7IxX2-zp8aKzlVfAZZhApJN0g1gTmZkmVqsIFq_IuX-ho/exec';
-    const GOOGLE_FORM_URL = 'YOUR_GOOGLE_FORM_URL_HERE'; // Fallback link if needed
+    const GOOGLE_FORM_URL = 'YOUR_GOOGLE_FORM_URL_HERE';
 
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
 
     let currentGuestData = {};
 
-    // Dictionary of translations
     const i18n = {
         es: {
             welcome: (name) => `Hola ${name}`,
@@ -142,14 +141,16 @@
             no: "No, no podré asistir",
             plusOne: "¿Vendrá alguien contigo?",
             plusOnePlaceholder: "Nombre del acompañante",
-            meal: "Preferencia de comida",
-            meals: [
-                {val: "Carne", text: "Carne"},
-                {val: "Pescado", text: "Pescado (Pescetariano)"},
-                {val: "Vegetariano", text: "Vegetariano"}
+            dietary: "Preferencia alimentaria y restricciones",
+            dietaryOptions: [
+                {val: "None", text: "Ninguna / None"},
+                {val: "Pescatarian", text: "Pescetariano / Pescatarian"},
+                {val: "Vegetarian", text: "Vegetariano / Vegetarian"},
+                {val: "Vegan", text: "Vegano / Vegan"},
+                {val: "Others", text: "Otros (especificar) / Others"}
             ],
-            dietary: "Restricciones alimentarias y alergias",
-            dietaryPlaceholder: "Cuéntanos si tienes alguna...",
+            otherDietaryLabel: "Por favor especifica tus restricciones o alergias:",
+            otherPlaceholder: "Cuéntanos detalles...",
             submit: "Enviar confirmación",
             successTitle: "¡Gracias!",
             successText: "Tu respuesta ha sido guardada exitosamente.",
@@ -165,14 +166,16 @@
             no: "No, I can't make it",
             plusOne: "Will someone be accompanying you?",
             plusOnePlaceholder: "Guest Name",
-            meal: "Meal preference",
-            meals: [
-                {val: "Carne", text: "Meat"},
-                {val: "Pescado", text: "Fish (Pescatarian)"},
-                {val: "Vegetariano", text: "Vegetarian"}
+            dietary: "Dietary preferences & restrictions",
+            dietaryOptions: [
+                {val: "None", text: "None"},
+                {val: "Pescatarian", text: "Pescatarian"},
+                {val: "Vegetarian", text: "Vegetarian"},
+                {val: "Vegan", text: "Vegan"},
+                {val: "Others", text: "Others (specify)"}
             ],
-            dietary: "Dietary restrictions & allergies",
-            dietaryPlaceholder: "Let us know...",
+            otherDietaryLabel: "Please specify restrictions or allergies:",
+            otherPlaceholder: "Let us know details...",
             submit: "Submit RSVP",
             successTitle: "Thank You!",
             successText: "Your response has been successfully recorded.",
@@ -193,12 +196,10 @@
                     currentGuestData = data.guest;
                     document.getElementById('rsvp-form-view').classList.remove('hidden');
                     
-                    // Determine language from sheet (defaults to 'es' if column is blank or missing)
                     let lang = (data.guest.language || 'es').toLowerCase();
                     if (!i18n[lang]) lang = 'es'; 
                     const t = i18n[lang];
 
-                    // Apply text based on chosen language
                     const guestName = data.guest.name || '';
                     document.getElementById('welcome-title').innerText = t.welcome(guestName);
                     document.getElementById('sub-title').innerText = t.sub;
@@ -207,26 +208,24 @@
                     document.getElementById('opt-no').innerText = t.no;
                     document.getElementById('lbl-plus-one').innerText = t.plusOne;
                     document.getElementById('plus_one_name').placeholder = t.plusOnePlaceholder;
-                    document.getElementById('lbl-meal').innerText = t.meal;
                     
-                    // Populate meal options
-                    const mealSelect = document.getElementById('meal_preference');
-                    mealSelect.innerHTML = '';
-                    t.meals.forEach(m => {
+                    document.getElementById('lbl-dietary').innerText = t.dietary;
+                    const dietarySelect = document.getElementById('dietary_preference');
+                    dietarySelect.innerHTML = '';
+                    t.dietaryOptions.forEach(optData => {
                         let opt = document.createElement('option');
-                        opt.value = m.val;
-                        opt.innerText = m.text;
-                        mealSelect.appendChild(opt);
+                        opt.value = optData.val;
+                        opt.innerText = optData.text;
+                        dietarySelect.appendChild(opt);
                     });
 
-                    document.getElementById('lbl-dietary').innerText = t.dietary;
-                    document.getElementById('dietary').placeholder = t.dietaryPlaceholder;
+                    document.getElementById('lbl-other-dietary').innerText = t.otherDietaryLabel;
+                    document.getElementById('dietary_custom').placeholder = t.otherPlaceholder;
                     document.getElementById('btn-submit').innerText = t.submit;
                     
                     document.getElementById('suc-title').innerText = t.successTitle;
                     document.getElementById('suc-text').innerText = t.successText;
 
-                    // Handle Plus One allowance visibility
                     const allowPlusOne = String(data.guest.allow_plus_one).toLowerCase() === 'true';
                     if (!allowPlusOne) {
                         document.getElementById('plus-one-container').style.display = 'none';
@@ -241,16 +240,35 @@
             });
     }
 
-    // Handle form submission back to Apps Script
+    // Toggle custom text box if "Others" is selected
+    document.getElementById('dietary_preference').addEventListener('change', function() {
+        const otherContainer = document.getElementById('other-dietary-container');
+        if (this.value === 'Others') {
+            otherContainer.classList.remove('hidden');
+        } else {
+            otherContainer.classList.add('hidden');
+            document.getElementById('dietary_custom').value = '';
+        }
+    });
+
+    // Handle form submission and concatenate strings into 'dietary'
     document.getElementById('rsvpForm').addEventListener('submit', function(e) {
         e.preventDefault();
         
+        const pref = document.getElementById('dietary_preference').value;
+        const customText = document.getElementById('dietary_custom').value.trim();
+        
+        // Concatenate preference and custom text nicely
+        let finalDietary = pref;
+        if (pref === 'Others' && customText) {
+            finalDietary = `Others: ${customText}`;
+        }
+
         const payload = {
             token: token,
             attending: document.querySelector('input[name="attending"]:checked').value,
             plus_one_name: document.getElementById('plus_one_name').value,
-            meal_preference: document.getElementById('meal_preference').value,
-            dietary: document.getElementById('dietary').value,
+            dietary: finalDietary,
             status: 'Submitted'
         };
 
