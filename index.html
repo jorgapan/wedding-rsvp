@@ -3,252 +3,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wedding RSVP / Boda RSVP</title>
+    <title>Wedding RSVP | Jorge & Inca</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #fdfbf7; color: #333; max-width: 500px; margin: 40px auto; padding: 20px; }
-        .card { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: relative; }
-        .lang-toggle { position: absolute; top: 20px; right: 20px; background: none; border: 1px solid #ccc; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; width: auto; }
-        h2 { margin-top: 0; color: #2c3e50; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; }
-        select, input[type="text"] { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
-        button[type="submit"] { background: #2c3e50; color: #fff; border: none; padding: 12px 20px; width: 100%; border-radius: 6px; font-size: 16px; cursor: pointer; margin-top: 10px; }
-        button[type="submit"]:hover { background: #34495e; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            background: #fdfbf7; 
+            color: #333; 
+            max-width: 800px; 
+            margin: 40px auto; 
+            padding: 20px; 
+            text-align: center; 
+        }
+        .banner-container {
+            width: 100%; 
+            max-width: 800px; 
+            margin: 0 auto 20px auto; 
+            text-align: center;
+        }
+        .banner-container img {
+            width: 100%; 
+            height: auto; 
+            display: block; 
+            border-radius: 8px;
+        }
+        .card { 
+            background: #fff; 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+            text-align: left;
+        }
+        h2 { color: #2c3e50; text-align: center; }
+        p { color: #666; line-height: 1.5; }
+        .btn { 
+            display: inline-block; 
+            background: #556b2f; 
+            color: #fff; 
+            text-decoration: none; 
+            padding: 12px 20px; 
+            border-radius: 6px; 
+            font-size: 16px; 
+            margin-top: 20px; 
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+        }
+        .btn:hover { background: #455a26; }
         .hidden { display: none; }
-        #loading, #error-msg, #success-msg { text-align: center; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; color: #444; }
+        input[type="text"], select, textarea { 
+            width: 100%; 
+            padding: 10px; 
+            border: 1px solid #ccc; 
+            border-radius: 4px; 
+            box-sizing: border-box; 
+        }
+        .radio-group { display: flex; gap: 20px; margin-top: 5px; }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <button class="lang-toggle" id="lang-btn" onclick="toggleLanguage()">ES / EN</button>
-    
-    <div id="loading">Loading your personalized invite...</div>
-    <div id="error-msg" class="hidden" style="color: red;">Invalid or missing invitation link. Please check your WhatsApp link.<br><small>Enlace inválido o faltante.</small></div>
-    
-    <form id="rsvp-form" class="hidden">
-        <h2 id="welcome-title"></h2>
-        
-        <!-- Wedding Day RSVP -->
-        <div class="form-group">
-            <label id="lbl-wedding"></label>
-            <select id="rsvp_status" required>
-                <option value="" data-i18n="select">Please select...</option>
-                <option value="Attending" data-i18n="accept">Joyfully Accept</option>
-                <option value="Declined" data-i18n="decline">Regretfully Decline</option>
-            </select>
-        </div>
-
-        <!-- Conditional Plus One -->
-        <div class="form-group hidden" id="group-plus-one">
-            <label id="lbl-plus-one"></label>
-            <input type="text" id="plus_one_name" placeholder="">
-        </div>
-
-        <!-- Conditional Ice Breaker -->
-        <div class="form-group hidden" id="group-icebreaker">
-            <label id="lbl-icebreaker"></label>
-            <select id="icebreaker_attending">
-                <option value="" data-i18n="select">Please select...</option>
-                <option value="Yes" data-i18n="yes">Yes</option>
-                <option value="No" data-i18n="no">No</option>
-            </select>
-        </div>
-
-        <!-- Conditional Brunch -->
-        <div class="form-group hidden" id="group-brunch">
-            <label id="lbl-brunch"></label>
-            <select id="brunch_attending">
-                <option value="" data-i18n="select">Please select...</option>
-                <option value="Yes" data-i18n="yes">Yes</option>
-                <option value="No" data-i18n="no">No</option>
-            </select>
-        </div>
-
-        <!-- Conditional Kids Attending -->
-        <div class="form-group hidden" id="group-kids">
-            <label id="lbl-kids"></label>
-            <select id="kids_attending">
-                <option value="" data-i18n="select">Please select...</option>
-                <option value="0">0</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3+</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label id="lbl-dietary"></label>
-            <input type="text" id="dietary" placeholder="">
-        </div>
-
-        <button type="submit" id="submit-btn"></button>
-    </form>
-
-    <div id="success-msg" class="hidden">
-        <h2 id="suc-title"></h2>
-        <p id="suc-desc"></p>
+    <!-- Wedding Banner Image -->
+    <div class="banner-container">
+        <img src="wedding_rsvp_banner.png" alt="Jorge & Inca Wedding Banner">
     </div>
-</div>
+
+    <!-- Main RSVP Card Container -->
+    <div class="card" id="card-container">
+        <div id="loading" style="text-align: center; padding: 40px;">Loading your invitation...</div>
+        
+        <!-- Fallback view if scanned via QR without token -->
+        <div id="fallback-view" class="hidden" style="text-align: center;">
+            <h2>You're Invited! / ¡Estás Invitado!</h2>
+            <p>Please click below to fill out your RSVP form.<br><small>Por favor haz clic abajo para completar tu confirmación.</small></p>
+            <a href="YOUR_GOOGLE_FORM_URL_HERE" class="btn" id="form-link" style="max-width: 300px;">Open RSVP Form / Abrir Formulario</a>
+        </div>
+
+        <!-- Personalized RSVP Form View -->
+        <div id="rsvp-form-view" class="hidden">
+            <h2 id="welcome-title">Hola / Hello</h2>
+            <p style="text-align: center;">We are excited to celebrate with you! / ¡Estamos muy emocionados de celebrar contigo!</p>
+            
+            <form id="rsvpForm">
+                <div class="form-group">
+                    <label>Attending / Asistencia</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="attending" value="Yes" required> Sí, confirmo / I'll be there</label>
+                        <label><input type="radio" name="attending" value="No" required> No, no podré asistir / I can't make it</label>
+                    </div>
+                </div>
+
+                <div class="form-group" id="plus-one-container">
+                    <label id="plus-one-label">Will someone be accompanying you? / ¿Vendrá alguien contigo?</label>
+                    <input type="text" id="plus_one_name" name="plus_one_name" placeholder="Guest Name / Nombre del acompañante">
+                </div>
+
+                <div class="form-group">
+                    <label>Meal preference / Preferencia de comida</label>
+                    <select id="meal_preference" name="meal_preference">
+                        <option value="Carne">Carne / Meat</option>
+                        <option value="Pescado">Pescado / Fish (Pescatarian)</option>
+                        <option value="Vegetariano">Vegetariano / Vegetarian</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Dietary restrictions & allergies / Restricciones alimentarias y alergias</label>
+                    <textarea id="dietary" name="dietary" rows="3" placeholder="Let us know..."></textarea>
+                </div>
+
+                <button type="submit" class="btn">Enviar confirmación / Submit RSVP</button>
+            </form>
+        </div>
+
+        <!-- Success Message View -->
+        <div id="success-view" class="hidden" style="text-align: center;">
+            <h2>Thank You! / ¡Gracias!</h2>
+            <p>Your response has been successfully recorded.<br>Tu respuesta ha sido guardada exitosamente.</p>
+        </div>
+    </div>
 
 <script>
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwXUH8ej3-l3_-jhrgGQZ_7IxX2-zp8aKzlVfAZZhApJN0g1gTmZkmVqsIFq_IuX-ho/exec';
-    let currentLang = 'en'; 
-    let guestDataGlobal = null;
-
-    const translations = {
-        en: {
-            loading: "Loading your personalized invite...",
-            welcome: "Hello, ",
-            wedding: "Will you be attending the Wedding Day?",
-            plusOne: "Plus One Full Name",
-            plusOnePlaceholder: "Partner's Name",
-            icebreaker: "Will you attend the Ice-Breaker (Day Before)?",
-            brunch: "Will you attend the Recovery Brunch (Day After)?",
-            kids: "Will you be bringing children?",
-            dietary: "Dietary Restrictions / Allergies",
-            dietaryPlaceholder: "e.g. Vegetarian, Gluten-free, None",
-            submit: "Send RSVP",
-            saving: "Saving...",
-            select: "Please select...",
-            accept: "Joyfully Accept",
-            decline: "Regretfully Decline",
-            yes: "Yes, count me in!",
-            no: "Cannot make it",
-            successTitle: "Thank You!",
-            successDesc: "Your response has been successfully recorded.",
-            errorAlert: "There was an error saving your response. Please try again."
-        },
-        es: {
-            loading: "Cargando invitación personalizada...",
-            welcome: "Hola, ",
-            wedding: "¿Asistirás al día de la boda?",
-            plusOne: "Nombre completo de tu Acompañante (+1)",
-            plusOnePlaceholder: "Nombre de tu pareja",
-            icebreaker: "¿Asistirás al rompehielos (Día anterior)?",
-            brunch: "¿Asistirás al brunch de recuperación (Día posterior)?",
-            kids: "¿Vendrán niños con ustedes?",
-            dietary: "Restricciones alimentarias / Alergias",
-            dietaryPlaceholder: "ej. Vegetariano, Sin gluten, Ninguna",
-            submit: "Enviar confirmación",
-            saving: "Guardando...",
-            select: "Por favor selecciona...",
-            accept: "Sí, con alegría asistiré",
-            decline: "Lo siento, no podré asistir",
-            yes: "¡Sí, ahí estaré!",
-            no: "No podré asistir",
-            successTitle: "¡Muchas gracias!",
-            successDesc: "Tu respuesta ha sido registrada exitosamente.",
-            errorAlert: "Hubo un error al guardar tu respuesta. Inténtalo de nuevo."
-        }
-    };
-
-    function applyLanguage(lang) {
-        currentLang = lang;
-        const t = translations[lang];
-
-        document.getElementById('loading').innerText = t.loading;
-        if (guestDataGlobal) {
-            document.getElementById('welcome-title').innerText = t.welcome + guestDataGlobal.name;
-        }
-        document.getElementById('lbl-wedding').innerText = t.wedding;
-        document.getElementById('lbl-plus-one').innerText = t.plusOne;
-        document.getElementById('plus_one_name').placeholder = t.plusOnePlaceholder;
-        document.getElementById('lbl-icebreaker').innerText = t.icebreaker;
-        document.getElementById('lbl-brunch').innerText = t.brunch;
-        document.getElementById('lbl-kids').innerText = t.kids;
-        document.getElementById('lbl-dietary').innerText = t.dietary;
-        document.getElementById('dietary').placeholder = t.dietaryPlaceholder;
-        document.getElementById('submit-btn').innerText = t.submit;
-        
-        document.getElementById('suc-title').innerText = t.successTitle;
-        document.getElementById('suc-desc').innerText = t.successDesc;
-
-        document.querySelector('[data-i18n="select"]').innerText = t.select;
-        document.querySelector('[data-i18n="accept"]').innerText = t.accept;
-        document.querySelector('[data-i18n="decline"]').innerText = t.decline;
-        
-        document.getElementById('lang-btn').innerText = lang === 'en' ? 'Español' : 'English';
-    }
-
-    function toggleLanguage() {
-        applyLanguage(currentLang === 'en' ? 'es' : 'en');
-    }
+    const GOOGLE_FORM_URL = 'YOUR_GOOGLE_FORM_URL_HERE'; // Fallback link if needed
 
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
 
-    const loadingEl = document.getElementById('loading');
-    const errorEl = document.getElementById('error-msg');
-    const formEl = document.getElementById('rsvp-form');
-    const successEl = document.getElementById('success-msg');
+    let currentGuestData = {};
 
     if (!token) {
-        loadingEl.classList.add('hidden');
-        errorEl.classList.remove('hidden');
+        // Redirect or show fallback if no token is present (e.g. general QR scan)
+        window.location.href = GOOGLE_FORM_URL;
     } else {
+        // Fetch guest details using token
         fetch(`${SCRIPT_URL}?token=${token}`)
             .then(res => res.json())
             .then(data => {
-                loadingEl.classList.add('hidden');
+                document.getElementById('loading').classList.add('hidden');
                 if (data.status === 'success') {
-                    guestDataGlobal = data.guest;
+                    currentGuestData = data.guest;
+                    document.getElementById('rsvp-form-view').classList.remove('hidden');
                     
-                    const dbLang = guestDataGlobal.language ? String(guestDataGlobal.language).toLowerCase() : 'en';
-                    applyLanguage(dbLang === 'es' ? 'es' : 'en');
+                    // Personalize welcome heading based on sheet data columns
+                    const guestName = data.guest.name || 'Guest';
+                    document.getElementById('welcome-title').innerText = `Hola ${guestName} / Hello ${guestName}`;
 
-                    formEl.classList.remove('hidden');
-
-                    if (String(guestDataGlobal.allow_plus_one).toUpperCase() === 'TRUE') {
-                        document.getElementById('group-plus-one').classList.remove('hidden');
-                    }
-                    if (String(guestDataGlobal.invited_icebreaker).toUpperCase() === 'TRUE') {
-                        document.getElementById('group-icebreaker').classList.remove('hidden');
-                    }
-                    if (String(guestDataGlobal.invited_brunch).toUpperCase() === 'TRUE') {
-                        document.getElementById('group-brunch').classList.remove('hidden');
-                    }
-                    if (String(guestDataGlobal.kids_allowed).toUpperCase() === 'TRUE') {
-                        document.getElementById('group-kids').classList.remove('hidden');
+                    // Handle Plus One allowance visibility
+                    const allowPlusOne = String(data.guest.allow_plus_one).toLowerCase() === 'true';
+                    if (!allowPlusOne) {
+                        document.getElementById('plus-one-container').style.display = 'none';
                     }
                 } else {
-                    errorEl.classList.remove('hidden');
+                    document.getElementById('fallback-view').classList.remove('hidden');
                 }
             })
             .catch(() => {
-                loadingEl.classList.add('hidden');
-                errorEl.classList.remove('hidden');
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('fallback-view').classList.remove('hidden');
             });
     }
 
-    formEl.addEventListener('submit', e => {
+    // Handle form submission back to Apps Script
+    document.getElementById('rsvpForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        const submitBtn = document.getElementById('submit-btn');
-        submitBtn.disabled = true;
-        submitBtn.innerText = translations[currentLang].saving;
-
+        
         const payload = {
             token: token,
-            rsvp_status: document.getElementById('rsvp_status').value,
+            attending: document.querySelector('input[name="attending"]:checked').value,
             plus_one_name: document.getElementById('plus_one_name').value,
-            icebreaker_attending: document.getElementById('icebreaker_attending').value,
-            brunch_attending: document.getElementById('brunch_attending').value,
-            kids_attending: document.getElementById('kids_attending').value,
-            dietary: document.getElementById('dietary').value
+            meal_preference: document.getElementById('meal_preference').value,
+            dietary: document.getElementById('dietary').value,
+            status: 'Submitted'
         };
 
         fetch(SCRIPT_URL, {
             method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
-        }).then(() => {
-            formEl.classList.add('hidden');
-            successEl.classList.remove('hidden');
-        }).catch(() => {
-            alert(translations[currentLang].errorAlert);
-            submitBtn.disabled = false;
-            submitBtn.innerText = translations[currentLang].submit;
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === 'success') {
+                document.getElementById('rsvp-form-view').classList.add('hidden');
+                document.getElementById('success-view').classList.remove('hidden');
+            } else {
+                alert('Error submitting RSVP. Please try again.');
+            }
+        })
+        .catch(() => {
+            alert('Connection error. Please try again.');
         });
     });
 </script>
