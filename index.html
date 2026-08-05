@@ -182,6 +182,31 @@
             fbTitle: "You're Invited!",
             fbText: "Please click below to fill out your RSVP form.",
             fbBtn: "Open RSVP Form"
+        },
+        de: {
+            welcome: (name) => `Hallo ${name}`,
+            sub: "Wir freuen uns sehr, mit Ihnen zu feiern!",
+            attending: "Teilnahme",
+            yes: "Ja, ich bin dabei",
+            no: "Nein, ich kann leider nicht",
+            plusOne: "Kommt jemand als Begleitung mit?",
+            plusOnePlaceholder: "Name der Begleitperson",
+            dietary: "Ernährungswünsche & Unverträglichkeiten",
+            dietaryOptions: [
+                {val: "None", text: "Keine / None"},
+                {val: "Pescatarian", text: "Pescetarisch / Pescatarian"},
+                {val: "Vegetarian", text: "Vegetarisch / Vegetarian"},
+                {val: "Vegan", text: "Vegan / Vegan"},
+                {val: "Others", text: "Sonstige (bitte angeben) / Others"}
+            ],
+            otherDietaryLabel: "Bitte genaue Einschränkungen oder Allergien angeben:",
+            otherPlaceholder: "Teilen Sie uns Details mit...",
+            submit: "Zusage absenden",
+            successTitle: "Vielen Dank!",
+            successText: "Ihre Antwort wurde erfolgreich gespeichert.",
+            fbTitle: "Sie sind eingeladen!",
+            fbText: "Bitte klicken Sie unten, um das RSVP-Formular auszufüllen.",
+            fbBtn: "Formular öffnen"
         }
     };
 
@@ -258,7 +283,6 @@
         const pref = document.getElementById('dietary_preference').value;
         const customText = document.getElementById('dietary_custom').value.trim();
         
-        // Concatenate preference and custom text nicely
         let finalDietary = pref;
         if (pref === 'Others' && customText) {
             finalDietary = `Others: ${customText}`;
