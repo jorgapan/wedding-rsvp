@@ -34,7 +34,7 @@
             text-align: left;
         }
         h2 { color: #2c3e50; text-align: center; }
-        p { color: #666; line-height: 1.5; }
+        p { color: #666; line-height: 1.5; text-align: center; }
         .btn { 
             display: inline-block; 
             background: #556b2f; 
@@ -76,52 +76,50 @@
         
         <!-- Fallback view if scanned via QR without token -->
         <div id="fallback-view" class="hidden" style="text-align: center;">
-            <h2>You're Invited! / ¡Estás Invitado!</h2>
-            <p>Please click below to fill out your RSVP form.<br><small>Por favor haz clic abajo para completar tu confirmación.</small></p>
-            <a href="YOUR_GOOGLE_FORM_URL_HERE" class="btn" id="form-link" style="max-width: 300px;">Open RSVP Form / Abrir Formulario</a>
+            <h2 id="fb-title">You're Invited!</h2>
+            <p id="fb-text">Please click below to fill out your RSVP form.</p>
+            <a href="YOUR_GOOGLE_FORM_URL_HERE" class="btn" id="form-link" style="max-width: 300px;">Open RSVP Form</a>
         </div>
 
         <!-- Personalized RSVP Form View -->
         <div id="rsvp-form-view" class="hidden">
-            <h2 id="welcome-title">Hola / Hello</h2>
-            <p style="text-align: center;">We are excited to celebrate with you! / ¡Estamos muy emocionados de celebrar contigo!</p>
+            <h2 id="welcome-title">Hola</h2>
+            <p id="sub-title">We are excited to celebrate with you!</p>
             
             <form id="rsvpForm">
                 <div class="form-group">
-                    <label>Attending / Asistencia</label>
+                    <label id="lbl-attending">Attending</label>
                     <div class="radio-group">
-                        <label><input type="radio" name="attending" value="Yes" required> Sí, confirmo / I'll be there</label>
-                        <label><input type="radio" name="attending" value="No" required> No, no podré asistir / I can't make it</label>
+                        <label><input type="radio" name="attending" value="Yes" required> <span id="opt-yes">Yes, I'll be there</span></label>
+                        <label><input type="radio" name="attending" value="No" required> <span id="opt-no">No, I can't make it</span></label>
                     </div>
                 </div>
 
                 <div class="form-group" id="plus-one-container">
-                    <label id="plus-one-label">Will someone be accompanying you? / ¿Vendrá alguien contigo?</label>
-                    <input type="text" id="plus_one_name" name="plus_one_name" placeholder="Guest Name / Nombre del acompañante">
+                    <label id="lbl-plus-one">Will someone be accompanying you?</label>
+                    <input type="text" id="plus_one_name" name="plus_one_name" placeholder="Guest Name">
                 </div>
 
                 <div class="form-group">
-                    <label>Meal preference / Preferencia de comida</label>
+                    <label id="lbl-meal">Meal preference</label>
                     <select id="meal_preference" name="meal_preference">
-                        <option value="Carne">Carne / Meat</option>
-                        <option value="Pescado">Pescado / Fish (Pescatarian)</option>
-                        <option value="Vegetariano">Vegetariano / Vegetarian</option>
+                        <!-- Options will be populated dynamically based on language -->
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label>Dietary restrictions & allergies / Restricciones alimentarias y alergias</label>
+                    <label id="lbl-dietary">Dietary restrictions & allergies</label>
                     <textarea id="dietary" name="dietary" rows="3" placeholder="Let us know..."></textarea>
                 </div>
 
-                <button type="submit" class="btn">Enviar confirmación / Submit RSVP</button>
+                <button type="submit" class="btn" id="btn-submit">Submit RSVP</button>
             </form>
         </div>
 
         <!-- Success Message View -->
         <div id="success-view" class="hidden" style="text-align: center;">
-            <h2>Thank You! / ¡Gracias!</h2>
-            <p>Your response has been successfully recorded.<br>Tu respuesta ha sido guardada exitosamente.</p>
+            <h2 id="suc-title">Thank You!</h2>
+            <p id="suc-text">Your response has been successfully recorded.</p>
         </div>
     </div>
 
@@ -134,11 +132,59 @@
 
     let currentGuestData = {};
 
+    // Dictionary of translations
+    const i18n = {
+        es: {
+            welcome: (name) => `Hola ${name}`,
+            sub: "¡Estamos muy emocionados de celebrar contigo!",
+            attending: "Asistencia",
+            yes: "Sí, confirmo",
+            no: "No, no podré asistir",
+            plusOne: "¿Vendrá alguien contigo?",
+            plusOnePlaceholder: "Nombre del acompañante",
+            meal: "Preferencia de comida",
+            meals: [
+                {val: "Carne", text: "Carne"},
+                {val: "Pescado", text: "Pescado (Pescetariano)"},
+                {val: "Vegetariano", text: "Vegetariano"}
+            ],
+            dietary: "Restricciones alimentarias y alergias",
+            dietaryPlaceholder: "Cuéntanos si tienes alguna...",
+            submit: "Enviar confirmación",
+            successTitle: "¡Gracias!",
+            successText: "Tu respuesta ha sido guardada exitosamente.",
+            fbTitle: "¡Estás Invitado!",
+            fbText: "Por favor haz clic abajo para completar tu confirmación.",
+            fbBtn: "Abrir Formulario"
+        },
+        en: {
+            welcome: (name) => `Hello ${name}`,
+            sub: "We are excited to celebrate with you!",
+            attending: "Attending",
+            yes: "Yes, I'll be there",
+            no: "No, I can't make it",
+            plusOne: "Will someone be accompanying you?",
+            plusOnePlaceholder: "Guest Name",
+            meal: "Meal preference",
+            meals: [
+                {val: "Carne", text: "Meat"},
+                {val: "Pescado", text: "Fish (Pescatarian)"},
+                {val: "Vegetariano", text: "Vegetarian"}
+            ],
+            dietary: "Dietary restrictions & allergies",
+            dietaryPlaceholder: "Let us know...",
+            submit: "Submit RSVP",
+            successTitle: "Thank You!",
+            successText: "Your response has been successfully recorded.",
+            fbTitle: "You're Invited!",
+            fbText: "Please click below to fill out your RSVP form.",
+            fbBtn: "Open RSVP Form"
+        }
+    };
+
     if (!token) {
-        // Redirect or show fallback if no token is present (e.g. general QR scan)
         window.location.href = GOOGLE_FORM_URL;
     } else {
-        // Fetch guest details using token
         fetch(`${SCRIPT_URL}?token=${token}`)
             .then(res => res.json())
             .then(data => {
@@ -147,9 +193,38 @@
                     currentGuestData = data.guest;
                     document.getElementById('rsvp-form-view').classList.remove('hidden');
                     
-                    // Personalize welcome heading based on sheet data columns
-                    const guestName = data.guest.name || 'Guest';
-                    document.getElementById('welcome-title').innerText = `Hola ${guestName} / Hello ${guestName}`;
+                    // Determine language from sheet (defaults to 'es' if column is blank or missing)
+                    let lang = (data.guest.language || 'es').toLowerCase();
+                    if (!i18n[lang]) lang = 'es'; 
+                    const t = i18n[lang];
+
+                    // Apply text based on chosen language
+                    const guestName = data.guest.name || '';
+                    document.getElementById('welcome-title').innerText = t.welcome(guestName);
+                    document.getElementById('sub-title').innerText = t.sub;
+                    document.getElementById('lbl-attending').innerText = t.attending;
+                    document.getElementById('opt-yes').innerText = t.yes;
+                    document.getElementById('opt-no').innerText = t.no;
+                    document.getElementById('lbl-plus-one').innerText = t.plusOne;
+                    document.getElementById('plus_one_name').placeholder = t.plusOnePlaceholder;
+                    document.getElementById('lbl-meal').innerText = t.meal;
+                    
+                    // Populate meal options
+                    const mealSelect = document.getElementById('meal_preference');
+                    mealSelect.innerHTML = '';
+                    t.meals.forEach(m => {
+                        let opt = document.createElement('option');
+                        opt.value = m.val;
+                        opt.innerText = m.text;
+                        mealSelect.appendChild(opt);
+                    });
+
+                    document.getElementById('lbl-dietary').innerText = t.dietary;
+                    document.getElementById('dietary').placeholder = t.dietaryPlaceholder;
+                    document.getElementById('btn-submit').innerText = t.submit;
+                    
+                    document.getElementById('suc-title').innerText = t.successTitle;
+                    document.getElementById('suc-text').innerText = t.successText;
 
                     // Handle Plus One allowance visibility
                     const allowPlusOne = String(data.guest.allow_plus_one).toLowerCase() === 'true';
