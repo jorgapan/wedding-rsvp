@@ -34,7 +34,6 @@
             text-align: left;
         }
         h2 { color: #2c3e50; text-align: center; }
-        h3 { color: #556b2f; margin-top: 25px; border-bottom: 1px solid #eee; padding-bottom: 5px; font-size: 1.1rem; }
         p { color: #666; line-height: 1.5; text-align: center; }
         .btn { 
             display: inline-block; 
@@ -88,50 +87,19 @@
             <p id="sub-title">We are excited to celebrate with you!</p>
             
             <form id="rsvpForm">
-                <!-- Main Wedding Attendance -->
                 <div class="form-group">
-                    <label id="lbl-attending">Attending (January 30)</label>
+                    <label id="lbl-attending">Attending</label>
                     <div class="radio-group">
                         <label><input type="radio" name="attending" value="Yes" required> <span id="opt-yes">Yes, I'll be there</span></label>
                         <label><input type="radio" name="attending" value="No" required> <span id="opt-no">No, I can't make it</span></label>
                     </div>
                 </div>
 
-                <!-- Plus One -->
                 <div class="form-group" id="plus-one-container">
                     <label id="lbl-plus-one">Will someone be accompanying you?</label>
                     <input type="text" id="plus_one_name" name="plus_one_name" placeholder="Guest Name">
                 </div>
 
-                <!-- Kids / Children -->
-                <div class="form-group hidden" id="kids-container">
-                    <label id="lbl-kids">Children attending / Niños</label>
-                    <input type="text" id="kids_names" name="kids_names" placeholder="Names / Nombres">
-                </div>
-
-                <!-- Events Section -->
-                <h3 id="lbl-events-heading">Additional Events / Eventos Adicionales</h3>
-
-                <!-- Ice Breaker Event -->
-                <div class="form-group hidden" id="ice-breaker-container">
-                    <label id="lbl-ice-breaker">Ice Breaker Event</label>
-                    <div class="radio-group">
-                        <label><input type="radio" name="ice_breaker" value="Yes"> <span id="ib-yes">Yes</span></label>
-                        <label><input type="radio" name="ice_breaker" value="No"> <span id="ib-no">No</span></label>
-                    </div>
-                </div>
-
-                <!-- Brunch Event -->
-                <div class="form-group hidden" id="brunch-container">
-                    <label id="lbl-brunch">Post-Wedding Brunch</label>
-                    <div class="radio-group">
-                        <label><input type="radio" name="brunch" value="Yes"> <span id="br-yes">Yes</span></label>
-                        <label><input type="radio" name="brunch" value="No"> <span id="br-no">No</span></label>
-                    </div>
-                </div>
-
-                <!-- Dietary Preferences -->
-                <h3 id="lbl-dietary-heading">Dietary / Alimentación</h3>
                 <div class="form-group">
                     <label id="lbl-dietary">Dietary preferences & restrictions</label>
                     <select id="dietary_preference" name="dietary_preference">
@@ -168,18 +136,11 @@
         es: {
             welcome: (name) => `Hola ${name}`,
             sub: "¡Estamos muy emocionados de celebrar contigo!",
-            attending: "Asistencia (30 de Enero)",
+            attending: "Asistencia",
             yes: "Sí, confirmo",
             no: "No, no podré asistir",
             plusOne: "¿Vendrá alguien contigo?",
             plusOnePlaceholder: "Nombre del acompañante",
-            kids: "Nombres de los niños que asistirán",
-            kidsPlaceholder: "Nombres y edades",
-            eventsHeading: "Eventos Adicionales",
-            iceBreaker: "¿Asistirás al Rompehielo / Ice Breaker?",
-            brunch: "¿Asistirás al Brunch posterior?",
-            ibYes: "Sí", ibNo: "No", brYes: "Sí", brNo: "No",
-            dietaryHeading: "Preferencias Alimentarias",
             dietary: "Preferencia alimentaria y restricciones",
             dietaryOptions: [
                 {val: "None", text: "Ninguna / None"},
@@ -200,18 +161,11 @@
         en: {
             welcome: (name) => `Hello ${name}`,
             sub: "We are excited to celebrate with you!",
-            attending: "Attending (January 30)",
+            attending: "Attending",
             yes: "Yes, I'll be there",
             no: "No, I can't make it",
             plusOne: "Will someone be accompanying you?",
             plusOnePlaceholder: "Guest Name",
-            kids: "Children attending",
-            kidsPlaceholder: "Names and ages",
-            eventsHeading: "Additional Events",
-            iceBreaker: "Will you attend the Ice Breaker event?",
-            brunch: "Will you attend the Post-Wedding Brunch?",
-            ibYes: "Yes", ibNo: "No", brYes: "Yes", brNo: "No",
-            dietaryHeading: "Dietary Preferences",
             dietary: "Dietary preferences & restrictions",
             dietaryOptions: [
                 {val: "None", text: "None"},
@@ -232,18 +186,11 @@
         de: {
             welcome: (name) => `Hallo ${name}`,
             sub: "Wir freuen uns sehr, mit Ihnen zu feiern!",
-            attending: "Teilnahme (30. Januar)",
+            attending: "Teilnahme",
             yes: "Ja, ich bin dabei",
             no: "Nein, ich kann leider nicht",
             plusOne: "Kommt jemand als Begleitung mit?",
             plusOnePlaceholder: "Name der Begleitperson",
-            kids: "Teilnehmende Kinder",
-            kidsPlaceholder: "Namen und Alter",
-            eventsHeading: "Zusätzliche Veranstaltungen",
-            iceBreaker: "Nimmst du am Ice Breaker teil?",
-            brunch: "Nimmst du am Brunch teil?",
-            ibYes: "Ja", ibNo: "Nein", brYes: "Ja", brNo: "Nein",
-            dietaryHeading: "Ernährung",
             dietary: "Ernährungswünsche & Unverträglichkeiten",
             dietaryOptions: [
                 {val: "None", text: "Keine / None"},
@@ -278,8 +225,8 @@
                     if (!i18n[lang]) lang = 'es'; 
                     const t = i18n[lang];
 
-                    // Text Localizations
-                    document.getElementById('welcome-title').innerText = t.welcome(data.guest.name || '');
+                    const guestName = data.guest.name || '';
+                    document.getElementById('welcome-title').innerText = t.welcome(guestName);
                     document.getElementById('sub-title').innerText = t.sub;
                     document.getElementById('lbl-attending').innerText = t.attending;
                     document.getElementById('opt-yes').innerText = t.yes;
@@ -287,21 +234,7 @@
                     document.getElementById('lbl-plus-one').innerText = t.plusOne;
                     document.getElementById('plus_one_name').placeholder = t.plusOnePlaceholder;
                     
-                    document.getElementById('lbl-kids').innerText = t.kids;
-                    document.getElementById('kids_names').placeholder = t.kidsPlaceholder;
-
-                    document.getElementById('lbl-events-heading').innerText = t.eventsHeading;
-                    document.getElementById('lbl-ice-breaker').innerText = t.iceBreaker;
-                    document.getElementById('ib-yes').innerText = t.ibYes;
-                    document.getElementById('ib-no').innerText = t.ibNo;
-
-                    document.getElementById('lbl-brunch').innerText = t.brunch;
-                    document.getElementById('br-yes').innerText = t.brYes;
-                    document.getElementById('br-no').innerText = t.br-no || 'No';
-
-                    document.getElementById('lbl-dietary-heading').innerText = t.dietaryHeading;
                     document.getElementById('lbl-dietary').innerText = t.dietary;
-                    
                     const dietarySelect = document.getElementById('dietary_preference');
                     dietarySelect.innerHTML = '';
                     t.dietaryOptions.forEach(optData => {
@@ -318,24 +251,9 @@
                     document.getElementById('suc-title').innerText = t.successTitle;
                     document.getElementById('suc-text').innerText = t.successText;
 
-                    // --- VISIBILITY LOGIC BASED ON GOOGLE SHEET FLAGS ---
                     const allowPlusOne = String(data.guest.allow_plus_one).toLowerCase() === 'true';
-                    if (!allowPlusOne) document.getElementById('plus-one-container').style.display = 'none';
-
-                    const allowKids = String(data.guest.allow_kids).toLowerCase() === 'true';
-                    if (allowKids) document.getElementById('kids-container').classList.remove('hidden');
-
-                    const iceBreakerAllowed = String(data.guest.ice_breaker_allowed).toLowerCase() === 'true';
-                    if (iceBreakerAllowed) document.getElementById('ice-breaker-container').classList.remove('hidden');
-
-                    const brunchAllowed = String(data.guest.brunch_allowed).toLowerCase() === 'true';
-                    if (brunchAllowed) document.getElementById('brunch-container').classList.remove('hidden');
-
-                    // Deadline lock check (September 14, 2026)
-                    const deadline = new Date('2026-09-14T23:59:59');
-                    if (new Date() > deadline) {
-                        document.getElementById('rsvpForm').style.display = 'none';
-                        document.getElementById('sub-title').innerText = "The deadline to submit or modify your RSVP has passed.";
+                    if (!allowPlusOne) {
+                        document.getElementById('plus-one-container').style.display = 'none';
                     }
                 } else {
                     document.getElementById('fallback-view').classList.remove('hidden');
@@ -347,7 +265,7 @@
             });
     }
 
-    // Toggle custom dietary text box if "Others" is selected
+    // Toggle custom text box if "Others" is selected
     document.getElementById('dietary_preference').addEventListener('change', function() {
         const otherContainer = document.getElementById('other-dietary-container');
         if (this.value === 'Others') {
@@ -358,12 +276,13 @@
         }
     });
 
-    // Handle form submission and payload mapping
+    // Handle form submission and concatenate strings into 'dietary'
     document.getElementById('rsvpForm').addEventListener('submit', function(e) {
         e.preventDefault();
         
         const pref = document.getElementById('dietary_preference').value;
         const customText = document.getElementById('dietary_custom').value.trim();
+        
         let finalDietary = pref;
         if (pref === 'Others' && customText) {
             finalDietary = `Others: ${customText}`;
@@ -373,9 +292,6 @@
             token: token,
             attending: document.querySelector('input[name="attending"]:checked').value,
             plus_one_name: document.getElementById('plus_one_name').value,
-            kids_names: document.getElementById('kids_names').value,
-            ice_breaker: document.querySelector('input[name="ice_breaker"]:checked') ? document.querySelector('input[name="ice_breaker"]:checked').value : '',
-            brunch: document.querySelector('input[name="brunch"]:checked') ? document.querySelector('input[name="brunch"]:checked').value : '',
             dietary: finalDietary,
             status: 'Submitted'
         };
